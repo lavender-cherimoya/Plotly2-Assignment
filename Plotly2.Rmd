@@ -1,0 +1,47 @@
+---
+title: "Plotly Assignment"
+subtitle: "<span style='font-size:22px;'>Please click on the right border of the slide to view the next one.</span>"
+output: ioslides_presentation
+author: lavender-cherimoya
+date: "2024-08-26"
+---
+
+## R Code
+The following code uses the ChickWeight database, which contains the weight data in gram of 48 individual chicks during their growth, as a function of time and diet. There are 4 different diets, and the timeframe goes from 0 to 21 days maximum. 
+
+```{r slide1, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
+library(plotly)
+library(dplyr)
+```
+
+```{r slide1_2, echo=TRUE, error=FALSE, warning=FALSE, message=FALSE}
+
+plots <- ChickWeight %>%
+  split(.$Diet) %>%
+  lapply(function(df) {
+    plot_ly(df, x = ~Time, y = ~weight, color = ~Chick, 
+            colors = "Set2", type = 'scatter', 
+            mode = 'lines+markers', marker = list(size = 5)) %>%
+      layout(xaxis = list(title = "Time [days]"),
+             yaxis = list(title = "Weight [g]"),
+             showlegend = FALSE)
+  })
+```
+
+## Chick growth trajectories
+
+The plot below shows individual chick weight growth grouped by diet, with each subplot representing a different diet and each curve a different chick.
+
+```{r slide2, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
+plotly_plot <- subplot(plots, nrows = 2, shareX = TRUE, shareY = TRUE, titleY = TRUE)%>%
+  layout(title = "Chick growth as a function of diet and time",
+         annotations = list(
+           list(x = 0.225, y = 1.0, text = "Diet 1", showarrow = FALSE, xref='paper', yref='paper'),
+           list(x = 0.775, y = 1.0, text = "Diet 2", showarrow = FALSE, xref='paper', yref='paper'),
+           list(x = 0.225, y = 0.45, text = "Diet 3", showarrow = FALSE, xref='paper', yref='paper'),
+           list(x = 0.775, y = 0.45, text = "Diet 4", showarrow = FALSE, xref='paper', yref='paper')
+         ))
+
+plotly_plot
+```
+
